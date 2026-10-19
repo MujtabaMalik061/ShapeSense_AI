@@ -1,7 +1,7 @@
 // components/TopBar.jsx
 import React, { useEffect, useState } from "react";
 import "../assets/style/Topbar.css";
-import { IMAGES, sectionList } from "../services/Constants";
+import { IMAGES } from "../services/Constants";
 import { useAuth } from "../context/AuthContext";
 import { useLocation, useNavigate } from "react-router";
 import { ChevronLeft, Menu, Moon, Sun, X } from "lucide-react";
@@ -47,7 +47,7 @@ const TopBar = ({ darkMode, setDarkMode, setAcountState, currentSection }) => {
   return (
     <>
       {isLandingPage ? (
-        <div className="topbar-container">
+        <div className="topbar-container landing-topbar">
           <div className="topbar-left">
             <div
               className="topbar-left-btn"
@@ -56,31 +56,40 @@ const TopBar = ({ darkMode, setDarkMode, setAcountState, currentSection }) => {
               }}
             >
               <img className="topbar-logo" src={IMAGES.siteLogo} alt="" />
-              <h1 className="topbar-title">ShapeSense AI</h1>
+              <span className="topbar-title">ShapeSense AI</span>
             </div>
           </div>
           <div className="topbar-right">
             <nav className="topbar-nav">
-              {sectionList.slice(1).map((section, index) => (
+              {["features", "workflow", "why", "faq"].map((section, index) => (
                 <a
                   key={index}
-                  href={`#${section}`}
+                  href={`#${{ features: "Features", workflow: "How it works", why: "Why ShapeSense", faq: "FAQ" }[section]}`}
                   className={`topbar-link mobile-sidebar-link ${
                     currentSection === section ? "activeLink" : ""
                   }`}
                 >
-                  {section}
+                  {
+                    {
+                      features: "Features",
+                      workflow: "How it works",
+                      why: "Why ShapeSense",
+                      faq: "FAQ",
+                    }[section]
+                  }
                 </a>
               ))}
             </nav>
-            <span
-              onClick={() => {
-                setDarkMode(!darkMode);
-              }}
+            <button
+              type="button"
+              aria-label={
+                darkMode ? "Switch to light theme" : "Switch to dark theme"
+              }
+              onClick={() => setDarkMode(!darkMode)}
               className="icon icon-btn"
             >
               {darkMode ? <Sun /> : <Moon />}
-            </span>
+            </button>
             {usersType === "noUser" ? (
               <button
                 onClick={() => {
@@ -105,6 +114,8 @@ const TopBar = ({ darkMode, setDarkMode, setAcountState, currentSection }) => {
             )}
             <button
               onClick={() => setIsSidebar(true)}
+              aria-expanded={isSidebar}
+              aria-label="Open navigation"
               className="topbar-left-back-btn topbar-menu-btn"
             >
               <span className="icon">
@@ -128,7 +139,7 @@ const TopBar = ({ darkMode, setDarkMode, setAcountState, currentSection }) => {
               }}
             >
               <img className="topbar-logo" src={IMAGES.siteLogo} alt="" />
-              <h1 className="topbar-title">ShapeSense AI</h1>
+              <span className="topbar-title">ShapeSense AI</span>
             </div>
           </div>
           <div className="topbar-right">
@@ -179,6 +190,7 @@ const TopBar = ({ darkMode, setDarkMode, setAcountState, currentSection }) => {
           <div>
             <button
               onClick={() => setIsSidebar(false)}
+              aria-label="Close navigation"
               className="topbar-left-back-btn topbar-menu-btn"
             >
               <span className="icon">
@@ -197,15 +209,22 @@ const TopBar = ({ darkMode, setDarkMode, setAcountState, currentSection }) => {
           </div>
         </div>
         <nav className="mobile-sidebar-nav">
-          {sectionList.slice(1).map((section, index) => (
+          {["features", "workflow", "why", "faq"].map((section, index) => (
             <a
               key={index}
-              href={`#${section}`}
+              href={`#${{ features: "Features", workflow: "How it works", why: "Why ShapeSense", faq: "FAQ" }[section]}`}
               className={`mobile-sidebar-link ${
                 currentSection === section ? "activeLink" : ""
               }`}
             >
-              {section}
+              {
+                {
+                  features: "Features",
+                  workflow: "How it works",
+                  why: "Why ShapeSense",
+                  faq: "FAQ",
+                }[section]
+              }
             </a>
           ))}
         </nav>

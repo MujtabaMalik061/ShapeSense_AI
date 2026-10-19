@@ -1,262 +1,313 @@
-import React, { useEffect, useState } from "react";
-import "../assets/style/LandingPage.css";
-import { Dumbbell, HeartPulse, Apple, Brain } from "lucide-react";
+import { useEffect } from "react";
+import {
+  ArrowRight,
+  Apple,
+  Brain,
+  Check,
+  ChevronDown,
+  Dumbbell,
+  HeartPulse,
+  MessageCircle,
+  Target,
+  TrendingUp,
+} from "lucide-react";
 import { useNavigate, useOutletContext } from "react-router";
 import LandingHero from "../components/LandingHero";
 import { useAuth } from "../context/AuthContext";
 import { userType } from "../services/Helpers";
-import { sectionList } from "../services/Constants";
+import { IMAGES, sectionList } from "../services/Constants";
 import { toast } from "sonner";
+import "../assets/style/LandingPage.css";
+
+const features = [
+  {
+    icon: Dumbbell,
+    label: "01 / TRAIN",
+    title: "More purpose in every rep.",
+    text: "Create workout routines around your goals, experience, and available equipment.",
+  },
+  {
+    icon: Apple,
+    label: "02 / NOURISH",
+    title: "Nutrition that fits your life.",
+    text: "Get meal ideas and diet plans shaped around your preferences and fitness goals.",
+  },
+  {
+    icon: HeartPulse,
+    label: "03 / PROGRESS",
+    title: "See the bigger picture.",
+    text: "Keep your workouts, habits, and progress in view with a dedicated dashboard.",
+  },
+  {
+    icon: Brain,
+    label: "04 / LEARN",
+    title: "A little guidance goes a long way.",
+    text: "Ask your AI fitness coach questions about training and nutrition whenever you need direction.",
+  },
+];
+const faqs = [
+  [
+    "Can I use ShapeSense as a beginner?",
+    "Yes. Share your experience and goals when setting up your profile so you can create a plan that suits your starting point.",
+  ],
+  [
+    "Do I need a gym membership?",
+    "No. You can request bodyweight routines or workouts using the equipment you have at home.",
+  ],
+  [
+    "Can I personalize my nutrition plan?",
+    "Yes. Include your food preferences and goals when creating your diet plan.",
+  ],
+  [
+    "How do I get started?",
+    "Create an account, complete your fitness profile, and generate your first workout or nutrition plan.",
+  ],
+];
 
 const LandingPage = () => {
   const { currentUser } = useAuth();
   const { setAcountState, setCurrentSection } = useOutletContext();
   const navigate = useNavigate();
-
   useEffect(() => {
-    const options = {
-      root: null,
-      rootMargin: "0px",
-      threshold: 0.4,
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const id = entry.target.id;
-          window.history.replaceState(null, "", `#${id}`);
-          setCurrentSection(id);
-        }
-      });
-    }, options);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setCurrentSection(entry.target.id);
+        });
+      },
+      { rootMargin: "-15% 0px -50% 0px", threshold: 0 },
+    );
     sectionList.forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
+      const element = document.getElementById(id);
+      if (element) observer.observe(element);
     });
-
     return () => observer.disconnect();
-  }, []);
+  }, [setCurrentSection]);
+
+  const startJourney = (route = "") => {
+    const type = userType(currentUser);
+    if (type === "noUser") setAcountState("signUp");
+    else if (type === "notVerified")
+      navigate(`/user-details/${currentUser._id}`);
+    else if (type === "verified")
+      navigate(
+        typeof route === "string" && route
+          ? route
+          : `/dashboard/${currentUser._id}`,
+      );
+    else toast.error("Please log in again to continue.");
+  };
 
   return (
-    <div className="landing-page-container">
+    <main className="ss-landing">
       <section id="hero">
-        <LandingHero
-          ButtonClick={() => {
-            const type = userType(currentUser);
-            if (type === "noUser") {
-              setAcountState("login");
-            } else if (type === "notVerified") {
-              navigate(`/user-details/${currentUser._id}`);
-            } else if (type === "verified") {
-              navigate(`/dashboard/${currentUser._id}`);
-            } else {
-              return toast.error(
-                "User type undetermined. Please log in again."
-              );
-            }
-          }}
-        />
+        <LandingHero ButtonClick={() => startJourney()} />
       </section>
-      <section id="features" className="landing-page-features-section">
-        <h2 className="landing-page-section-title">Core Fitness Features</h2>
-
-        <div className="landing-page-features-grid">
-          <div
-            className="landing-page-feature-card"
-          >
-            <div className="landing-page-feature-icon">
-              <Dumbbell />
-            </div>
-            <h3 className="landing-page-feature-title">AI Workout Generator</h3>
-            <p className="landing-page-feature-text">
-              Personalized routines based on your fitness level, injuries, and
-              goals.
-            </p>
-          </div>
-
-          <div
-            className="landing-page-feature-card"
-          >
-            <div className="landing-page-feature-icon">
-              <Apple />
-            </div>
-            <h3 className="landing-page-feature-title">AI Diet Planner</h3>
-            <p className="landing-page-feature-text">
-              Custom diet plans with calorie tracking and macro optimization.
-            </p>
-          </div>
-
-          <div
-            className="landing-page-feature-card"
-          >
-            <div className="landing-page-feature-icon">
-              <HeartPulse />
-            </div>
-            <h3 className="landing-page-feature-title">Progress Tracking</h3>
-            <p className="landing-page-feature-text">
-              Track weight, body fat, calories, and daily fitness habits.
-            </p>
-          </div>
-
-          <div
-            className="landing-page-feature-card"
-          >
-            <div className="landing-page-feature-icon">
-              <Brain />
-            </div>
-            <h3 className="landing-page-feature-title">
-              24/7 AI Fitness Coach
-            </h3>
-            <p className="landing-page-feature-text">
-              Get instant guidance on workouts, diet, supplements, and more.
-            </p>
-          </div>
+      <div className="ss-principles">
+        <div className="ss-shell">
+          <span>
+            <Target size={20} /> Personal goals. Personal plans.
+          </span>
+          <span>
+            <Dumbbell size={20} /> Training that fits your routine
+          </span>
+          <span>
+            <TrendingUp size={20} /> Consistency over perfection
+          </span>
         </div>
-      </section>
-
-      <section id="workflow" className="landing-page-workflow-section">
-        <h2 className="landing-page-section-title">How ShapeSense Works</h2>
-
-        <div className="landing-page-workflow-steps">
-          <div className="workflow-step">
-            <div className="step-number">1</div>
-            <h4>Set Your Goal</h4>
-            <p>Weight loss, muscle gain, strength, endurance — your choice.</p>
+      </div>
+      <section id="features" className="ss-section ss-shell">
+        <div className="ss-section-heading">
+          <div>
+            <span className="ss-kicker">YOUR FITNESS, CONNECTED</span>
+            <h2>
+              Everything you need.
+              <br />
+              One clear direction.
+            </h2>
           </div>
-
-          <div className="workflow-step">
-            <div className="step-number">2</div>
-            <h4>Get Your AI Plan</h4>
-            <p>AI generates optimized diet + workout routines for you.</p>
-          </div>
-
-          <div className="workflow-step">
-            <div className="step-number">3</div>
-            <h4>Track & Improve</h4>
-            <p>Your plan evolves based on progress, habits, and feedback.</p>
-          </div>
-        </div>
-      </section>
-
-      <section id="why" className="landing-page-why-section">
-        <h2 className="landing-page-section-title">
-          Why Choose ShapeSense AI?
-        </h2>
-
-        <div className="landing-page-why-grid">
-          <div className="landing-page-why-card">
-            <h3>Personalized Fitness</h3>
-            <p>Every plan is tailored to you — no generic workout routines.</p>
-          </div>
-
-          <div className="landing-page-why-card">
-            <h3>Real-Time AI Adjustments</h3>
-            <p>Plans evolve weekly based on your performance and feedback.</p>
-          </div>
-
-          <div className="landing-page-why-card">
-            <h3>Easy to Track</h3>
-            <p>Visual charts and reports keep your progress crystal clear.</p>
-          </div>
-        </div>
-      </section>
-
-      <section id="tools" className="landing-page-tools-section">
-        <h2 className="landing-page-section-title">Fitness Tools</h2>
-
-        <div className="landing-page-tools-grid">
-          <div className="landing-page-tool-card">
-            <h3 className="landing-page-tool-title">Workout Builder</h3>
-            <p className="landing-page-tool-text">
-              Create custom workouts using AI based on your goal & equipment.
-            </p>
-          </div>
-
-          <div className="landing-page-tool-card">
-            <h3 className="landing-page-tool-title">Meal Planner</h3>
-            <p className="landing-page-tool-text">
-              Generate diet plans aligned with your macros and calories.
-            </p>
-          </div>
-
-          <div className="landing-page-tool-card">
-            <h3 className="landing-page-tool-title">AI Coach Chat</h3>
-            <p className="landing-page-tool-text">
-              Ask fitness questions anytime — AI coach answers instantly.
-            </p>
-          </div>
-
-          <div className="landing-page-tool-card">
-            <h3 className="landing-page-tool-title">Analytics Dashboard</h3>
-            <p className="landing-page-tool-text">
-              Track your entire fitness transformation visually.
-            </p>
-          </div>
-        </div>
-      </section>
-      <section id="testimonials" className="landing-page-testimonial-section">
-        <h2 className="landing-page-section-title">Success Stories</h2>
-
-        <div className="landing-page-testimonial-grid">
-          <div className="testimonial-card">
-            <p>“I lost 9kg in 6 weeks. The AI diet planner is spot on!”</p>
-            <h4>— Sarah F.</h4>
-          </div>
-
-          <div className="testimonial-card">
-            <p>
-              “The workout generator gave me better routines than my trainer!”
-            </p>
-            <h4>— Bilal Khan</h4>
-          </div>
-
-          <div className="testimonial-card">
-            <p>“Tracking progress is so easy and motivating. Love it!”</p>
-            <h4>— Aisha Malik</h4>
-          </div>
-        </div>
-      </section>
-
-      <section id="faq" className="landing-page-faq-section">
-        <h2 className="landing-page-section-title">
-          Frequently Asked Questions
-        </h2>
-
-        <div className="faq-item">
-          <h4>Is ShapeSense free?</h4>
-          <p>Yes! You can start with full access to basic tools.</p>
-        </div>
-
-        <div className="faq-item">
-          <h4>Do I need equipment?</h4>
-          <p>No — AI can create bodyweight-only routines too.</p>
-        </div>
-
-        <div className="faq-item">
-          <h4>Does it support diet personalization?</h4>
-          <p>Yes! It adapts to your preferences, allergies, and goals.</p>
-        </div>
-      </section>
-
-      <section id="about" className="landing-page-about-section">
-        <div className="landing-page-about-content">
-          <h2 className="landing-page-about-title">About ShapeSense AI</h2>
-          <p className="landing-page-about-text">
-            ShapeSense AI is designed to transform your fitness journey with
-            personalized AI-driven workouts, diets, and coaching. Our mission is
-            simple: help you reach your goals through smart, adaptive
-            technology.
+          <p>
+            Less time figuring out where to start.
+            <br />
+            More time moving toward what matters.
           </p>
         </div>
+        <div className="ss-feature-grid">
+          {features.map(({ icon: Icon, label, title, text }) => (
+            <article className="ss-feature" key={label}>
+              <div className="ss-feature-top">
+                <Icon size={25} />
+                <span>{label}</span>
+              </div>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </article>
+          ))}
+        </div>
       </section>
-
-      <footer className="landing-page-footer">
-        <p className="landing-page-footer-text">
-          © {new Date().getFullYear()} ShapeSense AI — All Rights Reserved
+      <section id="workflow" className="ss-workflow">
+        <div className="ss-shell ss-section">
+          <span className="ss-kicker">SMALL STEPS. REAL DIRECTION.</span>
+          <h2>
+            Your starting line
+            <br />
+            is right here.
+          </h2>
+          <div className="ss-steps">
+            {[
+              [
+                "01",
+                "Tell us about you",
+                "Your goals, fitness level, and preferences give your journey a personal starting point.",
+              ],
+              [
+                "02",
+                "Create your plan",
+                "Generate workouts and nutrition guidance that fit the way you want to move.",
+              ],
+              [
+                "03",
+                "Show up. Keep going.",
+                "Follow your routine, log your activity, and make your next step an informed one.",
+              ],
+            ].map(([number, title, text]) => (
+              <article key={number}>
+                <span className="ss-step-number">{number}</span>
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section id="why" className="ss-shell ss-section ss-split">
+        <div className="ss-plan-preview">
+          <div className="ss-preview-header">
+            <span>
+              <Dumbbell size={18} /> YOUR TRAINING SPACE
+            </span>
+            <span className="ss-demo-label">Example plan</span>
+          </div>
+          <h3>
+            A little structure.
+            <br />A lot of possibility.
+          </h3>
+          <div className="ss-preview-row">
+            <div>
+              <small>FOCUS</small>
+              <strong>Full-body strength</strong>
+            </div>
+            <span className="ss-pill">At your pace</span>
+          </div>
+          {[
+            "Warm up & get moving",
+            "Build strength with intention",
+            "Cool down & recover",
+          ].map((text, i) => (
+            <div className="ss-plan-row" key={text}>
+              <span>0{i + 1}</span>
+              <p>{text}</p>
+              <Check size={17} />
+            </div>
+          ))}
+          <div className="ss-preview-footer">
+            <HeartPulse size={18} /> One session. One step forward.
+          </div>
+        </div>
+        <div className="ss-split-copy">
+          <span className="ss-kicker">FITNESS THAT FITS</span>
+          <h2>
+            Built for your life.
+            <br />
+            And what comes next.
+          </h2>
+          <p>
+            You bring the ambition. ShapeSense helps you turn it into a routine,
+            with a place to plan, learn, and keep track of your journey.
+          </p>
+          <ul>
+            <li>
+              <Check size={18} /> Start from your own experience level
+            </li>
+            <li>
+              <Check size={18} /> Bring training and nutrition together
+            </li>
+            <li>
+              <Check size={18} /> Keep your progress within reach
+            </li>
+          </ul>
+          <button className="ss-inline-button" onClick={() => startJourney()}>
+            Find your starting point <ArrowRight size={18} />
+          </button>
+        </div>
+      </section>
+      <section id="tools" className="ss-shell ss-tools">
+        <div>
+          <MessageCircle size={29} />
+          <div>
+            <span className="ss-kicker">A QUESTION AWAY</span>
+            <h3>Bring a little clarity to your next move.</h3>
+            <p>
+              Explore training and nutrition questions with your AI fitness
+              coach.
+            </p>
+          </div>
+        </div>
+        <button
+          className="ss-button ss-button-outline"
+          onClick={() => startJourney("/coach")}
+        >
+          Meet your AI coach <ArrowRight size={18} />
+        </button>
+      </section>
+      <section id="faq" className="ss-shell ss-section ss-faq">
+        <div>
+          <span className="ss-kicker">GOOD QUESTIONS</span>
+          <h2>
+            A little clarity
+            <br />
+            before you begin.
+          </h2>
+          <p>Getting started should feel simple.</p>
+        </div>
+        <div>
+          {faqs.map(([question, answer]) => (
+            <details className="ss-faq-item" key={question}>
+              <summary>
+                {question}
+                <ChevronDown size={19} />
+              </summary>
+              <p>{answer}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+      <section id="about" className="ss-shell ss-closing">
+        <span className="ss-kicker">MAKE ROOM FOR A STRONGER YOU</span>
+        <h2>
+          Your next chapter
+          <br />
+          starts with one step.
+        </h2>
+        <p>
+          A workout. A better habit. A little more consistency.
+          <br />
+          Let’s build from there.
         </p>
+        <button className="ss-button" onClick={() => startJourney()}>
+          Start my journey <ArrowRight size={18} />
+        </button>
+      </section>
+      <footer className="ss-footer ss-shell">
+        <a href="#hero" className="ss-footer-brand">
+          <img src={IMAGES.siteLogo} alt="" />
+          ShapeSense <span>AI</span>
+        </a>
+        <p>Fitness with direction.</p>
+        <span>© {new Date().getFullYear()} ShapeSense AI</span>
+        <a href="#hero">Back to top ↑</a>
       </footer>
-    </div>
+    </main>
   );
 };
-
 export default LandingPage;

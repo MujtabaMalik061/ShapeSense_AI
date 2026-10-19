@@ -99,7 +99,9 @@
   font-weight: 500;
   text-decoration: none;
   white-space: nowrap;
-  transition: color 0.3s, transform 0.2s;
+  transition:
+    color 0.3s,
+    transform 0.2s;
   position: relative;
 }
 
@@ -238,12 +240,14 @@
   color: var(--textColor);
   text-decoration: none;
   border-radius: 10px;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
   position: relative;
   width: fit-content;
 }
 
-.mobile-sidebar-link.activeLink{
+.mobile-sidebar-link.activeLink {
   color: var(--primaryColor);
 }
 
@@ -302,5 +306,77 @@
 
   .right-side-container {
     padding: 8px;
+  }
+}
+
+/* Landing navigation */
+.landing-topbar {
+  padding: 14px max(24px, calc((100vw - 1180px) / 2));
+  border-bottom: 1px solid var(--borderColor);
+  box-shadow: none;
+  gap: 24px;
+}
+.landing-topbar .topbar-left {
+  padding: 0;
+}
+.landing-topbar .topbar-left-btn {
+  border: 0;
+  padding: 0;
+  gap: 9px;
+}
+.landing-topbar .topbar-title {
+  font-size: 19px;
+  letter-spacing: -0.6px;
+  color: var(--textColor);
+}
+.landing-topbar .topbar-logo {
+  width: 32px;
+  height: 32px;
+}
+.landing-topbar .topbar-right {
+  gap: 22px;
+}
+.landing-topbar .topbar-nav {
+  gap: 26px;
+  flex-wrap: nowrap;
+}
+.landing-topbar .topbar-link {
+  font-size: 12px;
+}
+.landing-topbar .topbar-login-btn {
+  padding: 10px 20px;
+  border-radius: 6px;
+  background: var(--primaryColor);
+  color: #082b25;
+  font-weight: 700;
+  font-size: 12px;
+  border: 0;
+}
+.landing-topbar .icon-btn {
+  background: transparent;
+  border: 0;
+  color: var(--textColorMuted);
+}
+.landing-topbar .icon-btn svg {
+  width: 18px;
+  height: 18px;
+}
+@media (max-width: 600px) {
+  .landing-topbar {
+    padding: 15px 20px;
+    gap: 12px;
+  }
+  .landing-topbar .topbar-right {
+    gap: 10px;
+  }
+  .landing-topbar .topbar-title {
+    font-size: 16px;
+  }
+  .landing-topbar .topbar-logo {
+    width: 26px;
+    height: 26px;
+  }
+  .landing-topbar .topbar-login-btn {
+    padding: 9px 13px;
   }
 }

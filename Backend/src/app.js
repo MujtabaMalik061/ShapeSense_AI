@@ -8,7 +8,6 @@ import {
   EMAIL_USER,
   EMAIL_PASS,
   ADMIN_EMAIL,
-  GEMINI_API,
 } from "./config/env.js";
 
 import express from "express";

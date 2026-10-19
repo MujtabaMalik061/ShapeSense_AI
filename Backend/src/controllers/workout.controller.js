@@ -1,6 +1,6 @@
 // src/controllers/workout.controller.js
 import Workout from "../models/workout.model.js";
-import { generatePlan } from "./gemini.controller.js";
+import { generatePlan } from "./xkiro.controller.js";
 
 export const createWorkout = async (req, res) => {
   try {

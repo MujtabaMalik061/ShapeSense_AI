@@ -1,6 +1,6 @@
 // src/controllers/plan.controller.js
 import Plan from "../models/plan.model.js";
-import { generatePlan } from "./gemini.controller.js";
+import { generatePlan } from "./xkiro.controller.js";
 
 export const createPlan = async (req, res) => {
   try {

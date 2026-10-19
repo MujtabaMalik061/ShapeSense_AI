@@ -1,4 +1,4 @@
-import { generatePlan } from "./gemini.controller.js";
+import { generatePlan } from "./xkiro.controller.js";
 
 export const question = async (req, res) => {
   try {
